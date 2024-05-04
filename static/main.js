@@ -4,10 +4,9 @@
     Frontend - Mini Project: PokeAPI Integration Project
 */
 
+// search for pokemon
 async function choosePokemon(event) {
     event.preventDefault();
-    event.preventDefault();
-    
     const searchTerm = event.target.elements.pokemon.value.toLowerCase();
     const result = await getPokeData(searchTerm);
     console.log(result);
@@ -16,6 +15,9 @@ async function choosePokemon(event) {
 
 async function getPokeData(query) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
+    if(response.status == 404) {
+        alert(`Pokemon not found with search term "${query}"`)
+    }
     console.log(response);
     return await response.json();
 }
@@ -28,8 +30,8 @@ async function displayPokemon(p) {
     // set and format values
     const pokemonName = capitalizeFirstLetter(p.name);
     const pokemonTypes = setTypes(p.types);
-    const pokemonAbilities = await setAbilities(p.name, p.abilities);
-    const pokemonMoves = await setMoves(p.name, p.moves);
+    const pokemonAbilities = await setAbilitiesOrMoves(p.name, "ability", p.abilities);
+    const pokemonMoves = await setAbilitiesOrMoves(p.name, "move", p.moves);
 
     const html = `
     <div class="preview-card card p-3">
@@ -63,37 +65,28 @@ async function displayPokemon(p) {
                 </tr>
                 </tbody>
             </table>
+            <h6>Abilities</h6>
             <div class="accordion mb-3">
                 ${pokemonAbilities}
             </div>
+            <h6>Moves</h6>
             <div class="accordion">
                 ${pokemonMoves}
             </div>
             <div class="card-body">
                 <button href="#" class="btn btn-primary">Add to Team</button>
-                <button href="#" class="btn btn-warning">Send Back</button>
+                <button onclick="removePreviewPokemon()" class="btn btn-warning">Send Back</button>
             </div>
         </div>
-  </div>`
+    </div>`
 
-    const divToRemove = document.getElementsByClassName("preview-card")[0];
-    divToRemove.remove();    
+    removePreviewPokemon();  
 
-  const div = document.getElementsByClassName("pokemon-display")[0];
-  div.insertAdjacentHTML('beforeend', html);
+    const div = document.getElementsByClassName("pokemon-display")[0];
+    div.insertAdjacentHTML('beforeend', html);
 
-  playCry(p.cries.latest);
+    playCry(p.cries.latest);
 }
-/*
-    [IMG]
-    NAME ##
-    TYPEs
-    stats:
-    HP, atk, def, sp-atk, sp-def, spd
-    1 ability? description?
-    1-3 moves? 
-    play cry??
-*/
 
 // change names to Title Case to make them look nice! :)
 function capitalizeFirstLetter(str) {
@@ -104,9 +97,11 @@ function capitalizeFirstLetter(str) {
     return newStr; 
 }
 
+// make types into single line, coloring text according to type
 function setTypes(types) {
     let pokemonTypes = ""
     for(let t of types) {
+
         // add spaces for multiple types
         if (pokemonTypes != "") {
             pokemonTypes += " "
@@ -187,81 +182,38 @@ async function getMoreData(query) {
     const response = await fetch(query);
     return await response.json();
 }
-
-// get html for pokemon's abilities
-async function setAbilities(pName, abl) {
-    let abilities = ""
-    let numAbl = 0;
-
-    // grab each ability, up to 3
-    for(let a of abl) {
-        if (numAbl == 3) {
-            break;
-        }
-
-        // ensure we get description in English
-        const ablObj = await getMoreData(a.ability.url)
-        let description;
-        for(let e in ablObj.effect_entries) {
-            console.log(e);
-            if (ablObj.effect_entries[e].language.name == "en") {
-                if (ablObj.effect_entries[e].short_effect != undefined) {
-                    description = ablObj.effect_entries[e].short_effect;
-                }
-                else if (ablObj.effect_entries[e].effect != undefined) {
-                    description = ablObj.effect_entries[e].effect;
-                }
-                else {
-                    description = "[Description not found]"
-                }
-                break;
-            }
-        }
-
-        // create html element to append to abilities
-        ablName = capitalizeFirstLetter(a.ability.name);
-        abilities += `
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${pName}-panel-ability-${a.ability.name}">
-                        Ability: <b class="ms-1">${ablName}</b>
-                    </button>
-                </h2>
-                <div id="${pName}-panel-ability-${a.ability.name}" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        ${description}
-                    </div>
-                </div>
-            </div>`;
-        numAbl++;
-    }
-
-    // return full html element for abilities
-    return abilities;
-}
     
-// get html for pokemon's moves
-async function setMoves(pName, moves) {
-    let pokemonMoves = ""
+// get html for pokemon's abilities/moves
+async function setAbilitiesOrMoves(pName, abilityOrMove, lst) {
+    let accordianSet = ""
     let numMoves = 0;
 
-    // grab moves, up to 3
-    for(let m of moves) {
+    // grab abilities/moves, up to 3
+    for(let item of lst) {
         if (numMoves == 3) {
             break;
         }
 
+        // this function performs the same for abilities and moves, but we need to access different data sets
+        let itemCategory;
+        if (abilityOrMove == "ability") {
+            itemCategory = item.ability;
+        }
+        else {
+            itemCategory = item.move;
+        }
+
         // ensure we get descriptions in English
-        const moveObj = await getMoreData(m.move.url)
+        const dataObj = await getMoreData(itemCategory.url)
         let description;
 
-        for(let e in moveObj.effect_entries) {
-            if (moveObj.effect_entries[e].language.name == "en") {
-                if (moveObj.effect_entries[e].short_effect != null) {
-                    description = moveObj.effect_entries[e].short_effect;
+        for(let e in dataObj.effect_entries) {
+            if (dataObj.effect_entries[e].language.name == "en") {
+                if (dataObj.effect_entries[e].short_effect != undefined) {
+                    description = dataObj.effect_entries[e].short_effect;
                 }
-                else if (moveObj.effect_entries[e].effect != null) {
-                    description = moveObj.effect_entries[e].effect;
+                else if (dataObj.effect_entries[e].effect != undefined) {
+                    description = dataObj.effect_entries[e].effect;
                 }
                 else {
                     description = "[Description not found]"
@@ -270,16 +222,16 @@ async function setMoves(pName, moves) {
             }
         }
 
-        // create html element to append to moves
-        moveName = capitalizeFirstLetter(m.move.name);
-        pokemonMoves += `
+        // create html element to append to abilities/moves
+        moveName = capitalizeFirstLetter(itemCategory.name);
+        accordianSet += `
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${pName}-panel-move-${m.move.name}">
-                        Move: <b class="ms-1">${moveName}</b>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${pName}-panel-${abilityOrMove}-${itemCategory.name}">
+                        <b class="ms-1">${moveName}</b>
                     </button>
                 </h2>
-                <div id="${pName}-panel-move-${m.move.name}" class="accordion-collapse collapse">
+                <div id="${pName}-panel-${abilityOrMove}-${itemCategory.name}" class="accordion-collapse collapse">
                     <div class="accordion-body">
                         ${description}
                     </div>
@@ -288,12 +240,19 @@ async function setMoves(pName, moves) {
         numMoves++;
     }
 
-    // return full html element for mvoes
-    return pokemonMoves;
+    // return full html element for abilities/moves
+    return accordianSet;
 }
 
 // play sound from Pokemon
 function playCry(url) {
     let cry = new Audio(url);
     cry.play();
+}
+
+function removePreviewPokemon() {
+    const divToRemove = document.getElementsByClassName("preview-card")[0];
+    if(divToRemove != undefined) {
+        divToRemove.remove();  
+    }
 }

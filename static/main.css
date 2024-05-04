@@ -4,6 +4,10 @@
     Frontend - Mini Project: PokeAPI Integration Project
 */
 
+html {
+    overscroll-behavior-y: none;
+}
+
 body {
     height: 100vh;
     background-image: url("./images/bg_stadium.jpg");
@@ -22,6 +26,16 @@ body {
 .pokemon-form {
     max-width: 500px;
     margin: auto;
+}
+
+.btn-primary {
+    background-color: rgb(55,97,168);
+    border-color: rgb(55,97,168);
+}
+
+.btn-primary:hover {
+    background-color: midnightblue;
+    border-color: midnightblue;
 }
 
 .card {
@@ -43,6 +57,20 @@ body {
 
 .table {
     margin-top: 0px;
+}
+
+h6 {
+    color: black;
+}
+
+.btn-warning {
+    background-color: rgb(254,202,27);
+    border-color: rgb(254,202,27);
+}
+
+.btn-warning:hover {
+    background-color: goldenrod;
+    border-color: goldenrod;
 }
 
 /* h6 {
