@@ -1,0 +1,67 @@
+/*
+    James Carlson
+    Coding Temple - SE FT-144
+    Frontend - Mini Project: PokeAPI Integration Project
+*/
+
+body {
+    height: 100vh;
+    background-image: url("./images/bg_stadium.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.body-content {
+    background-color: rgba(240, 248, 255, 0.8);
+
+    min-height: 100vh;
+}
+
+.pokemon-form {
+    max-width: 500px;
+    margin: auto;
+}
+
+.card {
+    width: 22rem;
+    border-radius: 25px;
+    background: linear-gradient(45deg, rgb(215, 233, 255), rgb(255, 244, 246));
+    border: 1px solid midnightblue;
+    box-shadow: 3px 3px 3px black;
+}
+
+.card .table, .list-group-item, .card img, .accordion-button {
+    border: 1px solid midnightblue;
+    background-color: azure;
+}
+
+.card img {
+    border-radius: 10px;
+}
+
+.table {
+    margin-top: 0px;
+}
+
+/* h6 {
+    color: rgb(50, 50, 50);
+    color: rgb(206,64,105);
+    color: rgb(143,168,221);
+    color: rgb(171,106,200);
+    color: rgb(217,119,70);
+    color: rgb(146, 135, 104);
+    color: rgb(117, 158, 35);
+    color: rgb(82,105,172);
+    color: rgb(90,142,161);
+    color: rgb(216, 130, 69);
+    color: rgb(77,144,213);
+    color: rgb(99,187,91);
+    color: rgb(196, 162, 11);
+    color: rgb(249,113,118);
+    color: rgb(94, 173, 162);
+    color: rgb(10,109,196);
+    color: rgb(24, 4, 51);
+    color: rgb(197, 119, 192);
+} */
