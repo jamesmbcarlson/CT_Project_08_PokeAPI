@@ -7,6 +7,34 @@
 // global variables for handling Pokemon team
 let pokemonTeam = [];
 let previewPokemonObj;
+let pokemonToMove;
+
+const htmlTeamContainer = `
+    <div id="team-container" class="my-5 p-1">
+        <h1 class="my-4">Your Team</h1>
+        <div id="team-cards-container" class="m-3">
+            <div class="row">
+                <div id="container-card-1" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+                <div id="container-card-2" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+                <div id="container-card-3" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+                <div id="container-card-4" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+                <div id="container-card-5" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+                <div id="container-card-6" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>`
 
 // button is pressed -> search for pokemon
 async function choosePokemon(event) {
@@ -269,6 +297,12 @@ function addToTeam() {
     // goto page top
     globalThis.scrollTo({ top: 0, left:0, behavior: "instant"});
 
+    // add teams container
+    if(pokemonTeam.length == 0) {
+        const teamDiv = document.getElementById("team-space");
+        teamDiv.innerHTML = htmlTeamContainer;
+    }
+
     // add Pokemon to js list
     pokemonTeam.push(previewPokemonObj);
 
@@ -284,20 +318,57 @@ function addToTeam() {
 
 // remove html element at given id
 function removePokemon(id) {
+
+    // remove html element if found
     const divToRemove = document.getElementById(id);
     if(divToRemove != undefined) {
         divToRemove.remove();  
+
+        // for team cards, remove Pokemon from team
+        if(id != "preview-card") {
+            let cardNum = id.slice(-1);
+            pokemonTeam.splice(cardNum-1, 1);
+
+            // shift each postion as appropriate
+            if(cardNum <= pokemonTeam.length) {
+                pokemonToMove = pokemonTeam[cardNum-1];
+                moveCardDown(id);
+            }
+            else if(pokemonTeam.length == 0) {
+                const teamDiv = document.getElementById("team-space");
+                teamDiv.innerHTML = "";
+            }
+        }
+    }
+}
+
+function moveCardDown(id) {
+        
+    // create HTML element for team card and insert in proper container
+    const newCardNum = id.slice(-1);
+    const html = createHTMLElement(pokemonToMove, id, false)
+    const div = document.getElementById(`container-card-${newCardNum}`);
+    div.innerHTML=html;
+
+    const nextCardNum = Number(newCardNum) + 1;
+    
+    // move down next card
+    if(newCardNum != pokemonTeam.length)
+    {
+        pokemonToMove = pokemonTeam[newCardNum];
+        moveCardDown(`card-${nextCardNum}`);
+    }
+    else {
+        removePokemon(`card-${nextCardNum}`);
     }
 
-    if(id != "preview-card") {
-        // remove from team list
-        // shift each postion as appropriate
-    }
+    console.log(pokemonTeam);
 }
 
 // play sound from Pokemon
 function playCry(url) {
     let cry = new Audio(url);
+    cry.volume = 0.25;
     cry.play();
 }
 
