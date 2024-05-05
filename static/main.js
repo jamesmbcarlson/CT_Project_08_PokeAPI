@@ -4,97 +4,47 @@
     Frontend - Mini Project: PokeAPI Integration Project
 */
 
-// search for pokemon
+// global variables for handling Pokemon team
+let pokemonTeam = [];
+let previewPokemonObj;
+
+// button is pressed -> search for pokemon
 async function choosePokemon(event) {
     event.preventDefault();
     const searchTerm = event.target.elements.pokemon.value.toLowerCase();
     const result = await getPokeData(searchTerm);
-    console.log(result);
-    displayPokemon(result);
+    previewPokemon(result);
 }
 
+// return result from pokemon request
 async function getPokeData(query) {
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${query}`);
+    // alert user if no search result is found
     if(response.status == 404) {
         alert(`Pokemon not found with search term "${query}"`)
     }
-    console.log(response);
     return await response.json();
 }
 
-async function displayPokemon(p) {
-
-    // function for title cases!
-    // name, types, abilities, etc
-
-    // set and format values
-    const pokemonName = capitalizeFirstLetter(p.name);
-    const pokemonTypes = setTypes(p.types);
-    const pokemonAbilities = await setAbilitiesOrMoves(p.name, "ability", p.abilities);
-    const pokemonMoves = await setAbilitiesOrMoves(p.name, "move", p.moves);
-
-    const html = `
-    <div class="preview-card card p-3">
-        <img class="card-img-top" src="${p.sprites.other["official-artwork"].front_default}" alt="${p.name}">
-        <div class="card-body">
-            <h4 class="card-title">${pokemonName} <span style="color:rgb(125,125,125);">#${p.id}</span></h4>
-            <h6 class="card-title">${pokemonTypes}</h6>
-        
-            <table class="table table-bordered table-sm">
-                <thead>
-                    <th colspan="4">Stats</th>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>HP</td>
-                    <td>${p.stats[0].base_stat}</td>
-                    <td>Speed</td>
-                    <td>${p.stats[5].base_stat}</td>
-                </tr>
-                <tr>
-                    <td>Attack</td>
-                    <td>${p.stats[1].base_stat}</td>
-                    <td>Special Atk</td>
-                    <td>${p.stats[3].base_stat}</td>
-                </tr>
-                <tr>
-                    <td>Defense</td>
-                    <td>${p.stats[2].base_stat}</td>
-                    <td>Special Def</td>
-                    <td>${p.stats[4].base_stat}</td>
-                </tr>
-                </tbody>
-            </table>
-            <h6>Abilities</h6>
-            <div class="accordion mb-3">
-                ${pokemonAbilities}
-            </div>
-            <h6>Moves</h6>
-            <div class="accordion">
-                ${pokemonMoves}
-            </div>
-            <div class="card-body">
-                <button href="#" class="btn btn-primary">Add to Team</button>
-                <button onclick="removePreviewPokemon()" class="btn btn-warning">Send Back</button>
-            </div>
-        </div>
-    </div>`
-
-    removePreviewPokemon();  
-
+// display Pokemon search results
+async function previewPokemon(p) {
+    // store result in local object; 
+    const pokemonObj = p;
+    pokemonObj.types = setTypes(p.types);
+    pokemonObj.abilities = await setAbilitiesOrMoves(p.name, "ability", p.abilities);
+    pokemonObj.moves = await setAbilitiesOrMoves(p.name, "move", p.moves);
+    pokemonObj.name = toTitleCase(p.name); // TO-DO: for some reason this is changing the value of the result's name; I really don't think it should be, so I need to check what's happening here
+    previewPokemonObj = pokemonObj;
+    
+    // generate HTML element and write to page
+    const htmlID = "preview-card"
+    const html = createHTMLElement(pokemonObj, htmlID, true)
+    removePokemon("preview-card");  
     const div = document.getElementsByClassName("pokemon-display")[0];
     div.insertAdjacentHTML('beforeend', html);
 
+    // play Pokemon sound
     playCry(p.cries.latest);
-}
-
-// change names to Title Case to make them look nice! :)
-function capitalizeFirstLetter(str) {
-    let newStr = str.charAt(0).toUpperCase() + str.substring(1);
-    let spaceIndex = newStr.indexOf("-");
-    newStr = newStr.replace("-", " ");
-    newStr = newStr.substring(0, spaceIndex) + " " + newStr.charAt(spaceIndex+1).toUpperCase() + newStr.substring(spaceIndex+2);
-    return newStr; 
 }
 
 // make types into single line, coloring text according to type
@@ -170,17 +120,11 @@ function setTypes(types) {
         } 
 
         // append type to html element
-        pokemonTypes += `<span style="color: ${color};">` + capitalizeFirstLetter(t.type.name) + "</span>";
+        pokemonTypes += `<span style="color: ${color};">` + toTitleCase(t.type.name) + "</span>";
     }
 
     // return full html element for pokemon types
     return pokemonTypes;
-}
-
-// get additional data when needed
-async function getMoreData(query) {
-    const response = await fetch(query);
-    return await response.json();
 }
     
 // get html for pokemon's abilities/moves
@@ -203,10 +147,11 @@ async function setAbilitiesOrMoves(pName, abilityOrMove, lst) {
             itemCategory = item.move;
         }
 
-        // ensure we get descriptions in English
+        // look for and fetch English descriptions
         const dataObj = await getMoreData(itemCategory.url)
-        let description;
+        let description = "[Description not found]"; // default description
 
+        // search effect_entries for description
         for(let e in dataObj.effect_entries) {
             if (dataObj.effect_entries[e].language.name == "en") {
                 if (dataObj.effect_entries[e].short_effect != undefined) {
@@ -215,15 +160,23 @@ async function setAbilitiesOrMoves(pName, abilityOrMove, lst) {
                 else if (dataObj.effect_entries[e].effect != undefined) {
                     description = dataObj.effect_entries[e].effect;
                 }
-                else {
-                    description = "[Description not found]"
-                }
                 break;
+            }
+        }
+        // if effect_entries are empty, search flavor_text_entries
+        if (description == "[Description not found]") {
+            for(let e in dataObj.flavor_text_entries) {
+                if(dataObj.flavor_text_entries[e].language.name == "en") {
+                    if(dataObj.flavor_text_entries[e].flavor_text != undefined) {
+                        description = dataObj.flavor_text_entries[e].flavor_text;
+                        break;
+                    }
+                }
             }
         }
 
         // create html element to append to abilities/moves
-        moveName = capitalizeFirstLetter(itemCategory.name);
+        moveName = toTitleCase(itemCategory.name);
         accordianSet += `
             <div class="accordion-item">
                 <h2 class="accordion-header">
@@ -244,15 +197,120 @@ async function setAbilitiesOrMoves(pName, abilityOrMove, lst) {
     return accordianSet;
 }
 
+// get additional data when needed
+async function getMoreData(query) {
+    const response = await fetch(query);
+    return await response.json();
+}
+
+// create card in HTML to be inserted into page
+function createHTMLElement(p, htmlID, isPreviewing) {
+
+    let html = `
+     <div id="${htmlID}" class="card p-3">
+         <img class="card-img-top" src="${p.sprites.other["official-artwork"].front_default}" alt="${p.name}">
+         <div class="card-body">
+             <h4 class="card-title">${p.name} <span style="color:rgb(125,125,125);">#${p.id}</span></h4>
+             <h6 class="card-title">${p.types}</h6>
+         
+             <table class="table table-bordered table-sm">
+                 <thead>
+                     <th colspan="4">Stats</th>
+                 </thead>
+                 <tbody>
+                 <tr>
+                     <td>HP</td>
+                     <td>${p.stats[0].base_stat}</td>
+                     <td>Speed</td>
+                     <td>${p.stats[5].base_stat}</td>
+                 </tr>
+                 <tr>
+                     <td>Attack</td>
+                     <td>${p.stats[1].base_stat}</td>
+                     <td>Special Atk</td>
+                     <td>${p.stats[3].base_stat}</td>
+                 </tr>
+                 <tr>
+                     <td>Defense</td>
+                     <td>${p.stats[2].base_stat}</td>
+                     <td>Special Def</td>
+                     <td>${p.stats[4].base_stat}</td>
+                 </tr>
+                 </tbody>
+             </table>
+             <h6>Abilities</h6>
+             <div class="accordion mb-3">
+                 ${p.abilities}
+             </div>
+             <h6>Moves</h6>
+             <div class="accordion">
+                 ${p.moves}
+             </div>
+             <div class="card-body">`;
+
+    if(isPreviewing && pokemonTeam.length < 6) {
+        html += `<button onclick="addToTeam()" href="#" class="btn btn-primary">Add to Team</button>`
+    }
+    else if(isPreviewing) {
+        html += `<button class="btn btn-primary-outline style="cursor:pointer;" title="Team cannot exceed 6 members">Add to Team</button>`
+    }
+
+    html += `
+                 <button onclick="removePokemon('${htmlID}')" class="btn btn-warning">Send Back</button>
+             </div>
+         </div>
+     </div>`
+
+    return html;
+}
+
+// add Pokemon to team roster
+function addToTeam() {
+    // goto page top
+    globalThis.scrollTo({ top: 0, left:0, behavior: "instant"});
+
+    // add Pokemon to js list
+    pokemonTeam.push(previewPokemonObj);
+
+    // create HTML element for team card and insert in proper container
+    const htmlID = `card-${pokemonTeam.length}`
+    const html = createHTMLElement(previewPokemonObj, htmlID, false)
+    const div = document.getElementById(`container-card-${pokemonTeam.length}`);
+    div.insertAdjacentHTML('beforeend', html);
+    playCry(previewPokemonObj.cries.latest);
+    
+    removePokemon("preview-card");  
+}
+
+// remove html element at given id
+function removePokemon(id) {
+    const divToRemove = document.getElementById(id);
+    if(divToRemove != undefined) {
+        divToRemove.remove();  
+    }
+
+    if(id != "preview-card") {
+        // remove from team list
+        // shift each postion as appropriate
+    }
+}
+
 // play sound from Pokemon
 function playCry(url) {
     let cry = new Audio(url);
     cry.play();
 }
 
-function removePreviewPokemon() {
-    const divToRemove = document.getElementsByClassName("preview-card")[0];
-    if(divToRemove != undefined) {
-        divToRemove.remove();  
+// change names to Title Case to make them look nice! :)
+function toTitleCase(str) {
+    let newStr = str.charAt(0).toUpperCase() + str.substring(1);
+
+    // remove hyphens and replace with spaces
+    while (newStr.includes("-")) {
+        let spaceIndex = newStr.indexOf("-");
+        newStr[spaceIndex] = " ";
+        newStr = newStr.substring(0, spaceIndex) + " " + newStr.charAt(spaceIndex+1).toUpperCase() + newStr.substring(spaceIndex+2);
     }
+
+    return newStr; 
 }

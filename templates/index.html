@@ -13,6 +13,9 @@
 <meta name="Description" content="Enter your description here"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../static/main.css">
 <script src="../static/main.js" defer></script>
 <title>PokéAPI Team Assembler</title>
@@ -20,7 +23,8 @@
 <body class="container">
     <div class="body-content p-5">
         <div class="text-center">
-            <img src="../static/images/logo_pokeapi.png" class="my-5">
+            <img src="../static/images/logo_pokeapi.png" class="mt-5 mb-1">
+            <h1 class="mb-5">Team Assembler</h1>
             <h4>Choose Pokémon for your team!</h4>
             <div class="pokemon-selection my-5">
                 <form class="pokemon-form input-group input-group-lg" action="POST" onsubmit="choosePokemon(event)">
@@ -28,9 +32,9 @@
                     <button type="submit" class="btn-lg btn-primary">I Choose You!</button>
                 </form>
             </div>
-            <div class="d-flex justify-content-center pokemon-display">
+            <div class="d-flex justify-content-center pokemon-display mb-3">
 
-                <div class="preview-card card p-3">
+                <!-- <div id="preview-card" class="card p-3">
                     <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
                     <div class="card-body">
                       <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
@@ -93,9 +97,444 @@
                     </div>
                     <div class="card-body">
                       <button href="#" class="btn btn-primary">Add to Team</button>
-                      <button onclick="removePreviewPokemon()" class="btn btn-warning">Send Back</button>
+                      <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
                     </div>
                   </div>
+                </div> -->
+
+            </div>
+            <br>
+            <div id="team-container" class="my-5 p-1">
+                <h1 class="my-4">Your Team</h1>
+                <div id="team-cards-container" class="m-3">
+                    <div class="row">
+                        <div id="container-card-1" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-1" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+
+                        </div>
+                        <div id="container-card-2" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-2" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+
+                        </div>
+                        <div id="container-card-3" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-3" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+
+                        </div>
+                        <div id="container-card-4" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-4" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+
+                        </div>
+                        <div id="container-card-5" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-5" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+
+                        </div>
+                        <div id="container-card-6" class="col-xl-4 col-lg-6 d-flex justify-content-center mb-4">
+                            
+                            <!-- <div id="card-6" class="card p-3">
+                                <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" alt="${name}">
+                                <div class="card-body">
+                                  <h4 class="card-title">Ditto <span style="color:rgb(125,125,125);">#41</span></h4>
+                                  <h6 class="card-title">Normal</h6>
+                                
+                                <table class="table table-bordered table-sm">
+                                    <thead>
+                                        <th colspan="4">Stats</th>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <td>HP</td>
+                                        <td>48</td>
+                                        <td>Speed</td>
+                                        <td> 48</td>
+                                      </tr>
+                                      <tr>
+                                        <td>Attack</td>
+                                        <td>48</td>
+                                        <td>Special Atk</td>
+                                        <td>48</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Defense</td>
+                                        <td>48</td>
+                                        <td>Special Def</td>
+                                        <td>48</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <h6>Abilities</h6>
+                                <div class="accordion mb-3">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-ability-1">
+                                                Ability: <b class="ms-1">Imposter</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-ability-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Moves</h6>
+                                <div class="accordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panel-move-1">
+                                                Move: <b class="ms-1">Transform</b>
+                                            </button>
+                                        </h2>
+                                        <div id="panel-move-1" class="accordion-collapse collapse">
+                                            <div class="accordion-body">
+                                                This Pokémon transforms into a random opponent upon entering battle.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                  <button href="#" class="btn btn-primary">Add to Team</button>
+                                  <button onclick="removePokemon('preview-card')" class="btn btn-warning">Send Back</button>
+                                </div>
+                              </div>
+                            </div> -->
+                            
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
