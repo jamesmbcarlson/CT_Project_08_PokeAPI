@@ -46,12 +46,12 @@ body {
     width: 22rem;
     border-radius: 25px;
     background: linear-gradient(45deg, rgb(215, 233, 255), rgb(255, 244, 246));
-    border: 1px solid midnightblue;
+    border: 1px solid rgb(55,97,168);
     box-shadow: 3px 3px 3px black;
 }
 
 .card .table, .list-group-item, .card img, .accordion-button {
-    border: 1px solid midnightblue;
+    border: 1px solid rgb(55,97,168);
     background-color: azure;
 }
 
@@ -63,7 +63,11 @@ body {
     margin-top: 0px;
 }
 
-h1, h4, h6 {
+h1 {
+    font-family: "Acme";
+}
+
+h4, h6 {
     color: black;
     font-weight: 700;
 }
@@ -76,6 +80,22 @@ h1, h4, h6 {
 .btn-warning:hover {
     background-color: goldenrod;
     border-color: goldenrod;
+}
+
+footer {
+    width: 100%;
+    height: 72px;
+
+    background-color: rgb(55,97,168);
+    color: white;
+}
+
+footer a {
+    color: rgb(254,202,27);
+}
+
+footer a:hover {
+    color: goldenrod;
 }
 
 /* h6 {

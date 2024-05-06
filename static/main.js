@@ -40,6 +40,7 @@ const htmlTeamContainer = `
 async function choosePokemon(event) {
     event.preventDefault();
     const searchTerm = event.target.elements.pokemon.value.toLowerCase();
+    event.target.elements.pokemon.value = "";
     const result = await getPokeData(searchTerm);
     previewPokemon(result);
 }
@@ -277,7 +278,7 @@ function createHTMLElement(p, htmlID, isPreviewing) {
              <div class="card-body">`;
 
     if(isPreviewing && pokemonTeam.length < 6) {
-        html += `<button onclick="addToTeam()" href="#" class="btn btn-primary">Add to Team</button>`
+        html += `<button onclick="addToTeam()" class="btn btn-primary">Add to Team</button>`
     }
     else if(isPreviewing) {
         html += `<button class="btn btn-primary-outline style="cursor:pointer;" title="Team cannot exceed 6 members">Add to Team</button>`
@@ -339,6 +340,18 @@ function removePokemon(id) {
                 teamDiv.innerHTML = "";
             }
         }
+    }
+
+    // update disabled add-to-team button
+    if(pokemonTeam.length == 5) {
+        try{
+            const buttonDiv = document.getElementById("preview-card")
+            .getElementsByClassName("card-body")[0].getElementsByClassName("card-body")[0];
+                buttonDiv.innerHTML = `
+                <button onclick="addToTeam()" class="btn btn-primary">Add to Team</button>
+                <button onclick="removePokemon("preview-card")" class="btn btn-warning">Send Back</button>`
+        }
+        catch {}
     }
 }
 
