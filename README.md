@@ -1,3 +1,5 @@
+*View this project deployed online at https://jc-pokeapi.netlify.app/
+
 ## Project: PokéAPI Integration Project
 
 Author: James Carlson
